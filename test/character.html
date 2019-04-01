@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <style>
+            canvas{
+                border: 1px solid #000;
+				background-color: #000;
+            }
+        </style>
+    </head>
+    <body>
+ 
+    <div id="gamepadPrompt"></div>
+    <canvas id="canvas" width=720 height=480></canvas>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="../js/paper-full.min.js"></script>
+
+    <script type="text/paperscript" canvas="canvas">
+		var step = 30;
+		var position = new Point(360, 240);
+		var myBall = new Path.Circle(position, 35);
+		myBall.fillColor = 'red';
+		myBall.strokeColor = '#fff';
+		myBall.strokeWidth = 2;
+		
+		function onKeyDown(event){
+			if(event.key == 'a'){
+				if(myBall.position.x == 0){
+					console.log("Hit position!");
+				}
+				else{
+					myBall.position.x -= step;
+				}
+			}
+			
+			if(event.key == 'd'){
+				if(myBall.position.x == 720){
+					console.log("Hit position!");
+				}
+				else{
+					myBall.position.x += step;
+				}
+			}
+			
+			if(event.key == 'w'){
+				if(myBall.position.y == 0){
+					console.log("Hit position!");
+				}
+				else{
+					myBall.position.y -= step;
+				}
+			}
+			
+			if(event.key == 's'){
+				if(myBall.position.y == 480){
+					console.log("Hit position!");
+				}
+				else{
+					myBall.position.y += step;
+				}
+			}
+		}
+    </script>
+        
+    <script>
+    var hasGP = false;
+ 
+    function canGame() {
+        return "getGamepads" in navigator;
+    }
+    
+    
+    $(document).ready(function() {
+ 
+        if(canGame()) {
+ 
+            $(window).on("gamepadconnected", function() {
+                hasGP = true;
+                //$("#gamepadPrompt").html("Gamepad connected!");
+                console.log("connection event");
+                
+                    
+                });
+ 
+            $(window).on("gamepaddisconnected", function() {
+                console.log("disconnection event");
+                $("#gamepadPrompt").text(prompt);
+                window.clearInterval(repGP);
+            });
+ 
+            //setup an interval for Chrome
+            var checkGP = window.setInterval(function() {
+                console.log('checkGP');
+                if(navigator.getGamepads()[0]) {
+                    if(!hasGP) $(window).trigger("gamepadconnected");
+                    window.clearInterval(checkGP);
+                }
+            }, 500);
+        }
+ 
+    });
+    </script>
+        
+    </body>
+</html>
