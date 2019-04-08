@@ -34,6 +34,42 @@ canvas {
 <script>
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+ctx.beginPath();
+ctx.arc(200, 200, 25, 0, Math.PI*2, true);
+ctx.closePath();
+ctx.fillStyle="rgb(25,175,55)";
+ctx.fill();
+ctx.beginPath();
+ctx.arc(95, 308, 25, 0, Math.PI*2, true);
+ctx.closePath();
+ctx.fillStyle="rgb(55,25,175)";
+ctx.fill();
+ctx.beginPath();
+ctx.arc(40, 405, 25, 0, Math.PI*2, true);
+ctx.closePath();
+ctx.fillStyle="rgb(175,25,55)";
+ctx.fill();
+
+ctx.beginPath();
+ctx.moveTo(200,190);
+ctx.lineTo(210,210);
+ctx.moveTo(200,190);
+ctx.lineTo(190,210);
+ctx.moveTo(195,200);
+ctx.lineTo(206,200);
+ctx.moveTo(85,295);
+ctx.lineTo(105,320);
+ctx.moveTo(105,295);
+ctx.lineTo(85,320);
+ctx.moveTo(35,395);
+ctx.lineTo(35,420);
+ctx.stroke();
+ctx.closePath();
+ctx.beginPath();
+ctx.arc(42, 399, 6, 180, Math.PI, false);
+ctx.arc(42,412, 7, 180, Math.PI, false);
+ctx.stroke();
+ctx.closePath();
 
 ctx.font = "900 75px sans-serif";
 ctx.lineWidth=2;
