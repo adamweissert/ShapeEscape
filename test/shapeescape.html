@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Rotating Rainbow Text Effect</title>
+<title>Shape Escape</title>
 <style type="text/css">
 	
 	html,body,canvas {
@@ -34,6 +34,8 @@ canvas {
 <script>
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+
+
 ctx.beginPath();
 ctx.arc(200, 200, 25, 0, Math.PI*2, true);
 ctx.closePath();
@@ -49,7 +51,7 @@ ctx.arc(40, 405, 25, 0, Math.PI*2, true);
 ctx.closePath();
 ctx.fillStyle="rgb(175,25,55)";
 ctx.fill();
-
+/*
 ctx.beginPath();
 ctx.moveTo(200,190);
 ctx.lineTo(210,210);
@@ -70,6 +72,13 @@ ctx.arc(42, 399, 6, 180, Math.PI, false);
 ctx.arc(42,412, 7, 180, Math.PI, false);
 ctx.stroke();
 ctx.closePath();
+*/
+
+ctx.font = "32px Arial";
+ctx.fillStyle="rgb(0,0,0)";
+ctx.fillText("A", 190, 210);
+ctx.fillText("X", 85, 319);
+ctx.fillText("B", 30, 415);
 
 ctx.font = "900 75px sans-serif";
 ctx.lineWidth=2;
