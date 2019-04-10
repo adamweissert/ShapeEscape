@@ -86,14 +86,20 @@ var repGP;
 			this.move = function(){
 				if(input.up){
 					this.y -= this.speed;
-					if(this.y < 0){
-						this.y = 0;
+					if(this.y < 30 + this.r){
+						this.y = 30 + this.r;
+						console.log("Game over!");
+						//location.reload();
 					}
 				}
 				if(input.down){
 					this.y += this.speed;
-					if(this.y > canvas.height){
-						this.y = canvas.height;
+					if(this.y > canvas.height-30-this.r){
+						this.y = canvas.height-30-this.r;
+						console.log("Game over!");
+						gameOver();
+						//location.reload();
+						
 					}
 				}
 			}
@@ -102,7 +108,6 @@ var repGP;
 				draw.circle(this.x, this.y, this.r, this.color, this.stroke, this.lineWid);
 			}
 			
-
 		};
  
 		var wallTop = function(){
@@ -118,9 +123,6 @@ var repGP;
 				draw.wall1(this.x, this.y, this.w, this.h, this.color);
 			}
 			
-			this.collides = function(obj){
-				
-			}
 				
 		};
 		
@@ -137,6 +139,10 @@ var repGP;
 				draw.wall2(this.x, this.y, this.w, this.h, this.color);
 				draw.text("Time: "+time, this.x+20, this.y-10, 30, "white");
 				draw.text("Score: " +score, 500, this.y-10, 30, "white");
+			}
+			
+			this.collides = function(){
+				
 			}
 		};
 
@@ -160,9 +166,18 @@ var repGP;
 			wall1.draw();
 			wall2.draw();
 		}
+		
+		function gameOver(){
+			clearInterval(handle);
+			handle = 0;
+			location.reload();
+		}
+		function signUpForm(){
+			
+		}
 
 		
-		setInterval(loop, 30);
+		var handle = setInterval(loop, 30);
 		
 		function reportOnGamepad() {
 			var gp = navigator.getGamepads()[0];
@@ -172,12 +187,12 @@ var repGP;
 			if(a.pressed){
 				input.up = false;
 				input.down = true;
-				console.log("A-Button pressed!");
+				//console.log("A-Button pressed!");
 			}
 			else if(y.pressed){
 				input.up = true;
 				input.down = false;
-				console.log("Y-Button pressed!");
+				//console.log("Y-Button pressed!");
 			}
 			else{
 				input.up = false;
