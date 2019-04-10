@@ -123,6 +123,21 @@ var img;
    requestAnimationFrame(a);
 })();
 
+
+
+window.onload = function() {
+	window.addEventListener("keydown", function(e) {
+		if (e.keyCode == 65) {
+			console.log("a");
+			} else if (e.keyCode == 88) {
+				console.log("x");
+				} else if (e.keyCode == 66) {
+					console.log("b");
+					}
+	e.preventDefault();
+		}, true);
+	};
+
 </script>
 </body>
 </html>
