@@ -4,6 +4,8 @@ var time = 0;
 var obstacle;
 var wall1;
 var wall2;
+var randRecs;
+var paused = false;
 var hasGP = false;
 var repGP;
 		
@@ -63,9 +65,16 @@ var repGP;
 				ctx.fillRect(x, y, w, h);
 				
 			},
+			rectangles: function(x, y, w, h, col){
+				ctx.fillStyle = col;
+				ctx.fillRect(x, y, w, h);
+			},
 			
 			text: function(str, x, y, size, col){
 				ctx.font = 'bold ' + size + 'px Courier';
+				ctx.strokeStyle = 'black';
+				ctx.lineWidth = 4;
+				ctx.strokeText(str, x, y);
 				ctx.fillStyle = col;
 				ctx.fillText(str, x, y);
 			}
@@ -89,6 +98,7 @@ var repGP;
 					if(this.y < 30 + this.r){
 						this.y = 30 + this.r;
 						console.log("Game over!");
+						gameOver();
 						//location.reload();
 					}
 				}
@@ -141,11 +151,20 @@ var repGP;
 				draw.text("Score: " +score, 500, this.y-10, 30, "white");
 			}
 			
-			this.collides = function(){
-				
+		};
+		
+		var randomRectangle = function(){
+			this.init = function() {
+				this.x = 360;
+				this.y = 240;
+				this.w = Math.floor(Math.random()*200) + 25;
+				this.h = Math.floor(Math.random()*150) + 25;
+				this.col = "#b5e61d";
+			}
+			this.draw = function(){
+				draw.rectangles(this.x, this.y, this.w, this.h, this.col);
 			}
 		};
-
 		
 		
 		
@@ -157,15 +176,24 @@ var repGP;
 		
 		wall2 = new wallBottom();
 		wall2.init();
-
 		
+		randRecs = new randomRectangle();
+		randRecs.init();
+		
+		
+
 		function loop(){
 			draw.clear();
 			player.draw();
 			player.move();
 			wall1.draw();
 			wall2.draw();
+			setInterval(randRecs.draw(), 2200);
+						
 		}
+
+		
+		var handle = setInterval(loop, 30);
 		
 		function gameOver(){
 			clearInterval(handle);
@@ -175,21 +203,36 @@ var repGP;
 		function signUpForm(){
 			
 		}
+		function togglePause(paused){
+			
+			if(paused){
+				console.log("Paused!");
+				clearInterval(handle);
+				handle = 0;
+			}
+			else{
+				console.log("Restarted!");
+				handle = setInterval(loop, 30);
+			}
+			
+		}
 
 		
-		var handle = setInterval(loop, 30);
 		
 		function reportOnGamepad() {
 			var gp = navigator.getGamepads()[0];
 			var a = gp.buttons[0];
 			var y = gp.buttons[3];
+			var start = gp.buttons[9];
+			var upDir = gp.buttons[12];
+			var downDir = gp.buttons[13];
 			
-			if(a.pressed){
+			if(a.pressed||downDir.pressed){
 				input.up = false;
 				input.down = true;
 				//console.log("A-Button pressed!");
 			}
-			else if(y.pressed){
+			else if(y.pressed||upDir.pressed){
 				input.up = true;
 				input.down = false;
 				//console.log("Y-Button pressed!");
@@ -197,6 +240,24 @@ var repGP;
 			else{
 				input.up = false;
 				input.down = false;
+			}
+			
+			if(start.pressed){
+				if(paused == false){
+					paused = true;
+					togglePause(paused);
+					ctx.save();
+					ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+					draw.text("Paused", 300, 240, 30, "white");
+					draw.text("Press Start or 'P' to resume!", 150, 275, 25, "white");
+					ctx.restore();
+					
+				}
+				else{
+					paused = false;
+					togglePause(paused);
+				}
 			}
 		}
 
