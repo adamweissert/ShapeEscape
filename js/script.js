@@ -155,12 +155,23 @@ var repGP;
 		
 		var randomRectangle = function(){
 			this.init = function() {
-				this.x = 360;
-				this.y = 240;
-				this.w = Math.floor(Math.random()*200) + 25;
-				this.h = Math.floor(Math.random()*150) + 25;
+				this.speed = 4;
+				this.x = canvas.width-50;
+				this.y = Math.floor(Math.random()*280) + 40;
+				this.w = Math.floor(Math.random()*200) + 50;
+				this.h = Math.floor(Math.random()*150) + 20;
 				this.col = "#b5e61d";
 			}
+			this.move = function(){
+				if(this.x == 0){
+					ctx.clearRect();
+				}
+				else{
+					this.x -= this.speed;
+				}
+				
+			}
+			
 			this.draw = function(){
 				draw.rectangles(this.x, this.y, this.w, this.h, this.col);
 			}
@@ -180,29 +191,47 @@ var repGP;
 		randRecs = new randomRectangle();
 		randRecs.init();
 		
-		
+		function generateRectangles(){
+			var y = Math.floor(Math.random()*280) + 40;
+			var w = Math.floor(Math.random()*200) + 50;
+			var h = Math.floor(Math.random()*150) + 20;
+			var col = '#b5e61d';
+			ctx.save();
+			console.log(y, w, h, col);
+			draw.rectangles(canvas.width, y, w, h, col);
+
+		}	
 
 		function loop(){
 			draw.clear();
+			
 			player.draw();
 			player.move();
+			
 			wall1.draw();
 			wall2.draw();
-			setInterval(randRecs.draw(), 2200);
-						
-		}
-
+			
+			randRecs.draw();
+			randRecs.move();
+			
+			generateRectangles();
 		
+			
+		}
+	
 		var handle = setInterval(loop, 30);
+		
 		
 		function gameOver(){
 			clearInterval(handle);
 			handle = 0;
 			location.reload();
 		}
+		
 		function signUpForm(){
 			
 		}
+		
 		function togglePause(paused){
 			
 			if(paused){
@@ -250,7 +279,7 @@ var repGP;
 					ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
 					draw.text("Paused", 300, 240, 30, "white");
-					draw.text("Press Start or 'P' to resume!", 150, 275, 25, "white");
+					draw.text("Press Start to resume!", 150, 275, 25, "white");
 					ctx.restore();
 					
 				}
