@@ -1,19 +1,20 @@
 var player;
 var score = 0;
 var time = 0;
-var obstacle;
 var wall1;
 var wall2;
 var randRecs;
 var paused = false;
 var hasGP = false;
 var repGP;
+var gameStart = false;
 		
 	function canGame() {
 			return "getGamepads" in navigator;
 	}
 		
 	$(document).ready(function() {
+		var rectangleList = [];
 		var canvas = $('#canvas')[0];
 		canvas.width = 720;
 		canvas.height = 480;
@@ -79,6 +80,93 @@ var repGP;
 				ctx.fillText(str, x, y);
 			}
 		};
+ 
+		var wallTop = function(){
+			this.init = function(){
+				this.x = 0;
+				this.y = 0;
+				this.w = canvas.width;
+				this.h = 35;
+				this.color = "#00ef07";
+			}
+			
+			this.draw = function(){
+				draw.wall1(this.x, this.y, this.w, this.h, this.color);
+			}
+			
+		};
+		
+		var wallBottom = function(){
+			this.init = function(){
+				this.x = 0;
+				this.y = canvas.height;
+				this.w = canvas.width;
+				this.h = -35;
+				this.color = "#00ef07";
+			}
+			
+			this.draw = function(){
+				draw.wall2(this.x, this.y, this.w, this.h, this.color);
+				draw.text("Time: "+time, this.x+20, this.y-10, 30, "white");
+				draw.text("Score: " +score, 500, this.y-10, 30, "white");
+			}
+			
+		};
+		
+		var randomRectangle = function(){
+			this.init = function() {
+				this.speed = 5;
+				this.x = canvas.width-50;
+				this.y = Math.floor(Math.random()*280) + 40;
+				this.w = Math.floor(Math.random()*100) + 50;
+				this.h = Math.floor(Math.random()*80) + 20;
+				this.col = "#b5e61d";
+			}
+			this.move = function(){
+				this.x -= this.speed;
+				
+				if(this.x < 0){
+					rectangleList.splice();
+					
+				}
+				
+				if(this.collides(player)){
+					gameOver();
+				}
+				
+			}
+			
+			this.draw = function(num){
+				draw.rectangles(this.x, this.y, this.w, this.h, this.col);
+			}
+			
+			this.collides = function(obj){
+				this.left = this.x;
+				this.right = this.x + this.w;
+				this.top = this.y;
+				this.bottom = this.y + this.h;
+				
+				obj.left = obj.x+5;
+				obj.right = obj.x + obj.r - 5;
+				obj.top = obj.y - obj.r+5;
+				obj.bottom = obj.y + obj.r-5;
+				
+				if(this.bottom < obj.top){
+					return false;
+				}
+				if(this.top > obj.bottom){
+					return false;
+				}
+				if(this.right < obj.left){
+					return false;
+				}
+				if(this.left > obj.right){
+					return false;
+				}
+				
+				return true;
+			};
+		}
 		
 		var playerObject = function(){
 			
@@ -119,63 +207,6 @@ var repGP;
 			}
 			
 		};
- 
-		var wallTop = function(){
-			this.init = function(){
-				this.x = 0;
-				this.y = 0;
-				this.w = canvas.width;
-				this.h = 35;
-				this.color = "#00ef07";
-			}
-			
-			this.draw = function(){
-				draw.wall1(this.x, this.y, this.w, this.h, this.color);
-			}
-			
-				
-		};
-		
-		var wallBottom = function(){
-			this.init = function(){
-				this.x = 0;
-				this.y = canvas.height;
-				this.w = canvas.width;
-				this.h = -35;
-				this.color = "#00ef07";
-			}
-			
-			this.draw = function(){
-				draw.wall2(this.x, this.y, this.w, this.h, this.color);
-				draw.text("Time: "+time, this.x+20, this.y-10, 30, "white");
-				draw.text("Score: " +score, 500, this.y-10, 30, "white");
-			}
-			
-		};
-		
-		var randomRectangle = function(){
-			this.init = function() {
-				this.speed = 4;
-				this.x = canvas.width-50;
-				this.y = Math.floor(Math.random()*280) + 40;
-				this.w = Math.floor(Math.random()*200) + 50;
-				this.h = Math.floor(Math.random()*150) + 20;
-				this.col = "#b5e61d";
-			}
-			this.move = function(){
-				if(this.x == 0){
-					ctx.clearRect();
-				}
-				else{
-					this.x -= this.speed;
-				}
-				
-			}
-			
-			this.draw = function(){
-				draw.rectangles(this.x, this.y, this.w, this.h, this.col);
-			}
-		};
 		
 		
 		
@@ -186,23 +217,10 @@ var repGP;
 		wall1.init();
 		
 		wall2 = new wallBottom();
-		wall2.init();
-		
-		randRecs = new randomRectangle();
-		randRecs.init();
-		
-		function generateRectangles(){
-			var y = Math.floor(Math.random()*280) + 40;
-			var w = Math.floor(Math.random()*200) + 50;
-			var h = Math.floor(Math.random()*150) + 20;
-			var col = '#b5e61d';
-			ctx.save();
-			console.log(y, w, h, col);
-			draw.rectangles(canvas.width, y, w, h, col);
-
-		}	
+		wall2.init();		
 
 		function loop(){
+			gameStart = true;
 			draw.clear();
 			
 			player.draw();
@@ -211,21 +229,34 @@ var repGP;
 			wall1.draw();
 			wall2.draw();
 			
-			randRecs.draw();
-			randRecs.move();
-			
-			generateRectangles();
-		
-			
+			for(var i=0;i<rectangleList.length;i++){
+				rec = rectangleList[i];
+				rec.draw();
+				rec.move();	
+			}
 		}
-	
-		var handle = setInterval(loop, 30);
 		
+		var rectsPerSpawn = 1;
+		function addRects(){
+			for(var i=0;i<rectsPerSpawn;i++){
+				if(rectangleList.length < 500){
+					var rec = new randomRectangle();
+					
+					rectangleList.push(rec);
+					rec.init();
+				}
+			}
+		}
+		
+		var handle = setInterval(loop, 30);
+		var spawn = setInterval(addRects, 1000);
 		
 		function gameOver(){
 			clearInterval(handle);
+			clearInterval(spawn);
 			handle = 0;
-			location.reload();
+			spawn = 0;
+			location.reload(); //run this after a possible user selection?
 		}
 		
 		function signUpForm(){
@@ -233,7 +264,6 @@ var repGP;
 		}
 		
 		function togglePause(paused){
-			
 			if(paused){
 				console.log("Paused!");
 				clearInterval(handle);
@@ -256,7 +286,7 @@ var repGP;
 			var upDir = gp.buttons[12];
 			var downDir = gp.buttons[13];
 			
-			if(a.pressed||downDir.pressed){
+			if(gameStart && a.pressed||gameStart && downDir.pressed){
 				input.up = false;
 				input.down = true;
 				//console.log("A-Button pressed!");
@@ -279,7 +309,7 @@ var repGP;
 					ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
 					draw.text("Paused", 300, 240, 30, "white");
-					draw.text("Press Start to resume!", 150, 275, 25, "white");
+					draw.text("Press Start to resume!", 200, 275, 25, "white");
 					ctx.restore();
 					
 				}
@@ -292,7 +322,6 @@ var repGP;
 
 		
 			if(canGame()) {
-
 				var prompt = "To begin using your gamepad, connect it and press any button!";
 				$("#gamepadPrompt").text(prompt);
 
