@@ -14,6 +14,7 @@ var gameStart = false;
 	}
 		
 	$(document).ready(function() {
+		$("#gameOver").hide();
 		var rectangleList = [];
 		var canvas = $('#canvas')[0];
 		canvas.width = 720;
@@ -40,7 +41,7 @@ var gameStart = false;
 			}
 		})
 		
-		var draw = {
+			var draw = {
 			clear: function(){
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
 			},
@@ -146,10 +147,10 @@ var gameStart = false;
 				this.top = this.y;
 				this.bottom = this.y + this.h;
 				
-				obj.left = obj.x+5;
-				obj.right = obj.x + obj.r - 5;
-				obj.top = obj.y - obj.r+5;
-				obj.bottom = obj.y + obj.r-5;
+				obj.left = obj.x+7;
+				obj.right = obj.x + obj.r - 7;
+				obj.top = obj.y - obj.r+7;
+				obj.bottom = obj.y + obj.r-7;
 				
 				if(this.bottom < obj.top){
 					return false;
@@ -187,7 +188,7 @@ var gameStart = false;
 						this.y = 30 + this.r;
 						console.log("Game over!");
 						gameOver();
-						//location.reload();
+						
 					}
 				}
 				if(input.down){
@@ -196,7 +197,7 @@ var gameStart = false;
 						this.y = canvas.height-30-this.r;
 						console.log("Game over!");
 						gameOver();
-						//location.reload();
+						
 						
 					}
 				}
@@ -207,7 +208,6 @@ var gameStart = false;
 			}
 			
 		};
-		
 		
 		
 		player = new playerObject();
@@ -251,15 +251,31 @@ var gameStart = false;
 		var handle = setInterval(loop, 30);
 		var spawn = setInterval(addRects, 1000);
 		
+		function wait(timeToWait){
+			var now = new Date().getTime();
+			
+			while(new Date().getTime() < now + timeToWait){
+				//wait x seconds
+			}
+		}
+		
 		function gameOver(){
+			wait(1000);
 			clearInterval(handle);
 			clearInterval(spawn);
 			handle = 0;
 			spawn = 0;
-			location.reload(); //run this after a possible user selection?
+			signUpForm(time, score);
+
+			$("#canvas").hide();
+			$("#gameOver").show();
+			$("#startAgain").click(function(){
+				//something to start the game again
+			});
+			
 		}
 		
-		function signUpForm(){
+		function signUpForm(time, score){
 			
 		}
 		
@@ -267,18 +283,21 @@ var gameStart = false;
 			if(paused){
 				console.log("Paused!");
 				clearInterval(handle);
+				clearInterval(spawn);
 				handle = 0;
+				spawn = 0;
 			}
 			else{
 				console.log("Restarted!");
 				handle = setInterval(loop, 30);
+				spawn = setInterval(addRects, 1000);
 			}
 			
 		}
 
 		
 		
-		function reportOnGamepad() {
+		function reportOnGamepad(button) {
 			var gp = navigator.getGamepads()[0];
 			var a = gp.buttons[0];
 			var y = gp.buttons[3];
