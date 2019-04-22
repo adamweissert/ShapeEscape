@@ -24,17 +24,21 @@ canvas{
 	color: #fff;
 	text-align: center;
 	border: 2px solid #00ef07;
+	font-family: Arial, Helvetica, sans-serif;
 }
 .menu{
 	top: 50%;
 }
-.menu >p{
+.menu > p{
 	font-size: 48pt;
 	font-weight: bold;
 }
 .menuItem:hover{
 	cursor: pointer;
 	color: #00ef07;
+}
+h3{
+	font-size: 24pt;
 }
 body{
 	background-color: #ccc;

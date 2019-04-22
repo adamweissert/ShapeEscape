@@ -3,11 +3,12 @@ var score = 0;
 var time = 0;
 var wall1;
 var wall2;
-var randRecs;
+var handle, spawn;
 var paused = false;
 var hasGP = false;
 var repGP;
 var gameStart = false;
+
 		
 	function canGame() {
 			return "getGamepads" in navigator;
@@ -16,6 +17,8 @@ var gameStart = false;
 	$(document).ready(function() {
 		$("#gameOver").hide();
 		var rectangleList = [];
+		var powerUp = [];
+		
 		var canvas = $('#canvas')[0];
 		canvas.width = 720;
 		canvas.height = 480;
@@ -41,7 +44,7 @@ var gameStart = false;
 			}
 		})
 		
-			var draw = {
+		var draw = {
 			clear: function(){
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
 			},
@@ -134,7 +137,6 @@ var gameStart = false;
 				if(this.collides(player)){
 					gameOver();
 				}
-				
 			}
 			
 			this.draw = function(num){
@@ -147,10 +149,10 @@ var gameStart = false;
 				this.top = this.y;
 				this.bottom = this.y + this.h;
 				
-				obj.left = obj.x+7;
-				obj.right = obj.x + obj.r - 7;
-				obj.top = obj.y - obj.r+7;
-				obj.bottom = obj.y + obj.r-7;
+				obj.left = obj.x+12;
+				obj.right = obj.x + obj.r - 12;
+				obj.top = obj.y - obj.r+15;
+				obj.bottom = obj.y + obj.r-12;
 				
 				if(this.bottom < obj.top){
 					return false;
@@ -184,18 +186,18 @@ var gameStart = false;
 			this.move = function(){
 				if(input.up){
 					this.y -= this.speed;
-					if(this.y < 30 + this.r){
-						this.y = 30 + this.r;
-						console.log("Game over!");
+					if(this.y < 25 + this.r){
+						this.y = 25 + this.r;
+						//console.log("Game over!");
 						gameOver();
 						
 					}
 				}
 				if(input.down){
 					this.y += this.speed;
-					if(this.y > canvas.height-30-this.r){
-						this.y = canvas.height-30-this.r;
-						console.log("Game over!");
+					if(this.y > canvas.height-25-this.r){
+						this.y = canvas.height-25-this.r;
+						//console.log("Game over!");
 						gameOver();
 						
 						
@@ -219,6 +221,11 @@ var gameStart = false;
 		wall2 = new wallBottom();
 		wall2.init();		
 
+		/*function menu(){
+			draw.clear();
+			handle = setInterval(loop, 30);
+			spawn = setInterval(addRects, 1000);
+		}*/
 		function loop(){
 			gameStart = true;
 			draw.clear();
@@ -248,8 +255,8 @@ var gameStart = false;
 			}
 		}
 		
-		var handle = setInterval(loop, 30);
-		var spawn = setInterval(addRects, 1000);
+		handle = setInterval(loop, 30);
+			spawn = setInterval(addRects, 1000);
 		
 		function wait(timeToWait){
 			var now = new Date().getTime();
@@ -265,20 +272,59 @@ var gameStart = false;
 			clearInterval(spawn);
 			handle = 0;
 			spawn = 0;
-			signUpForm(time, score);
 
-			$("#canvas").hide();
+			//$("#canvas").hide();
 			$("#gameOver").show();
+			$("#game-over-text").html("GAME OVER!");
+			$("#stats").html("Score: " + score + " Time: " + time);
+			
+			$("#startAgain").html("Start Again");
+			$("#signUp").html("Sign Up");
+			$("#mainMenu").html("Exit to Main Menu");
+			
 			$("#startAgain").click(function(){
-				//something to start the game again
+				restart();
+			});
+			$("#signUp").click(function(){
+				signUpForm(score, time);
+			});
+			$("#mainMenu").click(function(){
+				endGame();
 			});
 			
+		}
+		function restart(){
+			clearInterval(handle);
+			clearInterval(spawn);
+				
+			handle = 0;
+			spawn = 0;
+			score = 0;
+			time = 0;
+			draw.clear();
+			rectangleList = [];
+			$("#gameOver").hide();
+				
+				
+			player.init();
+			wall1.init();
+			wall2.init();
+			spawn = setInterval(addRects, 1000);
+			handle = setInterval(loop, 30);
 		}
 		
 		function signUpForm(time, score){
 			
 		}
-		
+		function endGame(){
+			clearInterval(handle);
+			clearInterval(spawn);
+			
+			handle = 0;
+			spawn = 0;
+			$("#gameOver").hide();
+			menu();
+		}
 		function togglePause(paused){
 			if(paused){
 				console.log("Paused!");
@@ -288,15 +334,13 @@ var gameStart = false;
 				spawn = 0;
 			}
 			else{
-				console.log("Restarted!");
+				//console.log("Restarted!");
 				handle = setInterval(loop, 30);
 				spawn = setInterval(addRects, 1000);
 			}
 			
 		}
 
-		
-		
 		function reportOnGamepad(button) {
 			var gp = navigator.getGamepads()[0];
 			var a = gp.buttons[0];
@@ -305,48 +349,49 @@ var gameStart = false;
 			var upDir = gp.buttons[12];
 			var downDir = gp.buttons[13];
 			
-			if(gameStart && a.pressed||gameStart && downDir.pressed){
-				input.up = false;
-				input.down = true;
-				//console.log("A-Button pressed!");
-			}
-			else if(y.pressed||upDir.pressed){
-				input.up = true;
-				input.down = false;
-				//console.log("Y-Button pressed!");
-			}
-			else{
-				input.up = false;
-				input.down = false;
-			}
-			
-			if(start.pressed){
-				if(paused == false){
-					paused = true;
-					togglePause(paused);
-					ctx.save();
-					ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-					ctx.fillRect(0, 0, canvas.width, canvas.height);
-					draw.text("Paused", 300, 240, 30, "white");
-					draw.text("Press Start to resume!", 200, 275, 25, "white");
-					ctx.restore();
-					
+			if(gameStart){
+				if(a.pressed||downDir.pressed){
+					input.up = false;
+					input.down = true;
+					//console.log("A-Button pressed!");	
+				}
+				else if(y.pressed||upDir.pressed){
+					input.up = true;
+					input.down = false;
 				}
 				else{
-					paused = false;
-					togglePause(paused);
+					input.up = false;
+					input.down = false;
 				}
+				
+				if(start.pressed){
+					if(paused == false){
+						paused = true;
+						togglePause(paused);
+						ctx.save();
+						ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+						ctx.fillRect(0, 0, canvas.width, canvas.height);
+						draw.text("Paused", 300, 240, 30, "white");
+						draw.text("Press Start to resume!", 200, 275, 25, "white");
+						ctx.restore();
+
+					}
+					else{
+						paused = false;
+						togglePause(paused);
+					}					
+				}
+			}
+			else{
+				//menu();
 			}
 		}
 
 		
 			if(canGame()) {
-				var prompt = "To begin using your gamepad, connect it and press any button!";
-				$("#gamepadPrompt").text(prompt);
 
 				$(window).on("gamepadconnected", function() {
 					hasGP = true;
-					$("#gamepadPrompt").html("Gamepad connected!");
 					console.log("connection event");
 					repGP = window.setInterval(reportOnGamepad,100);
 				});
@@ -366,3 +411,14 @@ var gameStart = false;
 				}, 500);
 			}
     });
+
+/*TODO:
+-scores + time
+-put in menu && add controls to it synonymous w/game
+-music
+-power ups
+-sign up form
+-account info & score info
+-Exit to main menu
+-stylize page a bit
+*/
