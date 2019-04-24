@@ -8,14 +8,32 @@ var paused = false;
 var hasGP = false;
 var repGP;
 var gameStart = false;
-
-		
+var music = [
+	{fileName: '../music/song1.mp3',title: 'Back in Town - Crimson Nights'},
+	{fileName: '../music/song2.mp3',title: 'Chiptune Anthem - TeknoAXE'},
+	{fileName: '../music/song3.mp3',title: 'Digital Ether - Bit Chip Tune'},
+	{fileName: '../music/song4.mp3',title: 'Logical Sequnce of Events'},
+	{fileName: '../music/song5.mp3',title: 'To the Next Destination'}
+];
+	
 	function canGame() {
 			return "getGamepads" in navigator;
 	}
 		
 	$(document).ready(function() {
+		var randomIndexSong = Math.floor(Math.random() * music.length);
+		var song = music[randomIndexSong];
+		$("#song").attr('src', song.fileName);
+		var source = song.fileName;
+		var songPlayed = new Audio();
+		
+		songPlayed.src = source;
+		songPlayed.autoplay = true;
+		
+		
 		$("#gameOver").hide();
+		
+
 		var rectangleList = [];
 		var powerUp = [];
 		
@@ -227,6 +245,7 @@ var gameStart = false;
 			spawn = setInterval(addRects, 1000);
 		}*/
 		function loop(){
+			
 			gameStart = true;
 			draw.clear();
 			
@@ -241,6 +260,11 @@ var gameStart = false;
 				rec.draw();
 				rec.move();	
 			}
+			
+			TimeMe.startTimer("game");
+
+			time = TimeMe.getTimeOnPageInSeconds("game").toFixed(2);
+			score = Math.floor(time * 1.5);
 		}
 		
 		var rectsPerSpawn = 1;
@@ -251,12 +275,13 @@ var gameStart = false;
 					
 					rectangleList.push(rec);
 					rec.init();
+					songPlayed.play();
 				}
 			}
 		}
 		
 		handle = setInterval(loop, 30);
-			spawn = setInterval(addRects, 1000);
+		spawn = setInterval(addRects, 900);
 		
 		function wait(timeToWait){
 			var now = new Date().getTime();
@@ -265,18 +290,19 @@ var gameStart = false;
 				//wait x seconds
 			}
 		}
-		
+
 		function gameOver(){
+			songPlayed.pause();
+			TimeMe.stopTimer("game");
 			wait(1000);
 			clearInterval(handle);
 			clearInterval(spawn);
 			handle = 0;
 			spawn = 0;
 
-			//$("#canvas").hide();
 			$("#gameOver").show();
 			$("#game-over-text").html("GAME OVER!");
-			$("#stats").html("Score: " + score + " Time: " + time);
+			$("#stats").html("Score: " + score + " - Time: " + time+"s");
 			
 			$("#startAgain").html("Start Again");
 			$("#signUp").html("Sign Up");
@@ -294,6 +320,7 @@ var gameStart = false;
 			
 		}
 		function restart(){
+			TimeMe.resetAllRecordedPageTimes();
 			clearInterval(handle);
 			clearInterval(spawn);
 				
@@ -309,7 +336,7 @@ var gameStart = false;
 			player.init();
 			wall1.init();
 			wall2.init();
-			spawn = setInterval(addRects, 1000);
+			spawn = setInterval(addRects, 900);
 			handle = setInterval(loop, 30);
 		}
 		
@@ -317,26 +344,33 @@ var gameStart = false;
 			
 		}
 		function endGame(){
+			TimeMe.resetAllRecordedPageTimes();
 			clearInterval(handle);
 			clearInterval(spawn);
 			
 			handle = 0;
 			spawn = 0;
+			score = 0;
+			time = 0;
 			$("#gameOver").hide();
 			menu();
 		}
 		function togglePause(paused){
 			if(paused){
-				console.log("Paused!");
+				songPlayed.pause();
+				//console.log("Paused!");
+				TimeMe.stopTimer("game");
 				clearInterval(handle);
 				clearInterval(spawn);
 				handle = 0;
 				spawn = 0;
 			}
 			else{
+				songPlayed.play();
 				//console.log("Restarted!");
+				TimeMe.startTimer("game");
 				handle = setInterval(loop, 30);
-				spawn = setInterval(addRects, 1000);
+				spawn = setInterval(addRects, 900);
 			}
 			
 		}
@@ -350,6 +384,7 @@ var gameStart = false;
 			var downDir = gp.buttons[13];
 			
 			if(gameStart){
+				
 				if(a.pressed||downDir.pressed){
 					input.up = false;
 					input.down = true;
@@ -366,6 +401,7 @@ var gameStart = false;
 				
 				if(start.pressed){
 					if(paused == false){
+						
 						paused = true;
 						togglePause(paused);
 						ctx.save();
@@ -413,9 +449,9 @@ var gameStart = false;
     });
 
 /*TODO:
--scores + time
+-scores + time xx
 -put in menu && add controls to it synonymous w/game
--music
+-music xx
 -power ups
 -sign up form
 -account info & score info
