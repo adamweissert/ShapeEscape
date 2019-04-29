@@ -19,7 +19,7 @@ var music = [
 	function canGame() {
 			return "getGamepads" in navigator;
 	}
-		
+
 	$(document).ready(function() {
 		var randomIndexSong = Math.floor(Math.random() * music.length);
 		var song = music[randomIndexSong];
@@ -293,6 +293,7 @@ var music = [
 
 		function gameOver(){
 			songPlayed.pause();
+			songPlayed.currentTime = 0;
 			TimeMe.stopTimer("game");
 			wait(1000);
 			clearInterval(handle);
@@ -338,6 +339,14 @@ var music = [
 			wall2.init();
 			spawn = setInterval(addRects, 900);
 			handle = setInterval(loop, 30);
+			
+			randomIndexSong = Math.floor(Math.random() * music.length);
+			song = music[randomIndexSong];
+			$("#song").attr('src', song.fileName);
+			source = song.fileName;
+
+			songPlayed.src = source;
+			
 		}
 		
 		function signUpForm(time, score){
