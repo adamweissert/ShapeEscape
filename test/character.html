@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+		<script src="../js/timeme.min.js"></script>
+		<script>
+			TimeMe.initialize({
+				currentPageName: "Shape-test",
+				idleTimeoutInSeconds: 90
+			});
+		</script>
+		<link href="../css/stylesheet.css" rel="stylesheet">
+    </head>
+    <body>
+    <div id="gamepadPrompt"></div>
+    <canvas id="canvas"></canvas>
+	<audio id="song" src=""></audio>
+	<div id="gameOver">
+		<div class="menu">
+			<p id="game-over-text"></p>
+			<h3 id="stats"></h3>
+			<h2 class="menuItem" id="startAgain"></h2>
+			<h2 class="menuItem" id="signUp"></h2>
+			<h2 class="menuItem" id="mainMenu"></h2>
+		</div>
+	</div>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+	<script src="../js/script.js"></script>
+    </body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Shape Escape</title>
+<style type="text/css">
+	
+	html,body,canvas {
+   padding:0px;
+   margin:0px;
+   overflow:hidden;
+   height:100%;
+}
+
+body {
+   background-image: linear-gradient(to bottom,#C2CAE8,#8380B6);
+}
+
+
+canvas {
+   display:block;
+   margin:auto;
+   width:100vmin;
+   height:100vmin;
+}
+
+</style>
+</head>
+<body>
+<canvas id="canvas" width="720" height="480"></canvas>
+
+
+
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+
+ctx.beginPath();
+ctx.arc(200, 200, 25, 0, Math.PI*2, true);
+ctx.closePath();
+ctx.fillStyle="rgb(25,175,55)";
+ctx.fill();
+ctx.beginPath();
+ctx.arc(95, 308, 25, 0, Math.PI*2, true);
+ctx.closePath();
+ctx.fillStyle="rgb(55,25,175)";
+ctx.fill();
+ctx.beginPath();
+ctx.arc(40, 405, 25, 0, Math.PI*2, true);
+ctx.closePath();
+ctx.fillStyle="rgb(175,25,55)";
+ctx.fill();
+/*
+ctx.beginPath();
+ctx.moveTo(200,190);
+ctx.lineTo(210,210);
+ctx.moveTo(200,190);
+ctx.lineTo(190,210);
+ctx.moveTo(195,200);
+ctx.lineTo(206,200);
+ctx.moveTo(85,295);
+ctx.lineTo(105,320);
+ctx.moveTo(105,295);
+ctx.lineTo(85,320);
+ctx.moveTo(35,395);
+ctx.lineTo(35,420);
+ctx.stroke();
+ctx.closePath();
+ctx.beginPath();
+ctx.arc(42, 399, 6, 180, Math.PI, false);
+ctx.arc(42,412, 7, 180, Math.PI, false);
+ctx.stroke();
+ctx.closePath();
+*/
+
+ctx.font = "32px Arial";
+ctx.fillStyle="rgb(0,0,0)";
+ctx.fillText("A", 190, 210);
+ctx.fillText("X", 85, 319);
+ctx.fillText("B", 30, 415);
+
+ctx.font = "900 75px sans-serif";
+ctx.lineWidth=2;
+var str = "SHAPE ESCAPE";
+var strwidth = ctx.measureText(str).width;
+var str2 = "PLAY";
+var strwidth2 = ctx.measureText(str2).width;
+var width=canvas.width;
+var str3 = "CONTROLS";
+var strwidth3 = ctx.measureText(str3).width;
+var str4 = "HOW TO PLAY";
+var strwidth4 = ctx.measureText(str4).width;
+
+
+
+
+var c=0;
+var color=0;
+var img;
+
+(function a() {
+   img=ctx.getImageData(0,0,width,width);
+   //ctx.putImageData(img,0,0);
+   ctx.save();
+   ctx.translate((width/2),width/2);
+   //ctx.rotate(Math.PI*(c++/200));
+   
+   ctx.fillStyle='hsla('+(color=color+2%360)+', 100%, 50%, 1)';
+   ctx.fillText("SHAPE ESCAPE",-(strwidth/2), -250);
+   ctx.strokeText("SHAPE ESCAPE",-(strwidth/2), -250);
+   ctx.fillText("PLAY",-(strwidth2/1.75), -135);
+   ctx.strokeText("PLAY",-(strwidth2/1.75), -135);
+   ctx.fillText("CONTROLS", -(strwidth3/2), -25);
+   ctx.strokeText("CONTROLS", -(strwidth3/2), -25);
+   ctx.fillText("HOW TO PLAY", -(strwidth4/2), 75);
+   ctx.strokeText("HOW TO PLAY", -(strwidth4/2), 75);
+   
+   
+   ctx.restore();
+   
+   
+   requestAnimationFrame(a);
+})();
+
+
+
+window.onload = function() {
+	window.addEventListener("keydown", function(e) {
+		if (e.keyCode == 65) {
+			console.log("a");
+			} else if (e.keyCode == 88) {
+				console.log("x");
+				} else if (e.keyCode == 66) {
+					console.log("b");
+					}
+	e.preventDefault();
+		}, true);
+	};
+
+</script>
+</body>
+</html>
