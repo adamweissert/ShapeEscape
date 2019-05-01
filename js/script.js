@@ -91,9 +91,11 @@ var music = [
 				ctx.fillRect(x, y, w, h);
 				
 			},
-			rectangles: function(x, y, w, h, col){
+			rectangles: function(x, y, w, h, col, strokeCol, strokeWid){
 				ctx.fillStyle = col;
 				ctx.fillRect(x, y, w, h);
+				ctx.strokeStyle = strokeCol;
+				ctx.strokeWidth = strokeWid;
 			},
 			
 			text: function(str, x, y, size, col){
@@ -141,29 +143,20 @@ var music = [
 		var randomRectangle = function(){
 			this.init = function() {
 				if (score <= 100) {
-				this.speed = 5;
-				playerObject.speed = 10;
-					}
+					this.speed = 5;
+					playerObject.speed = 10;
+				}
 				else if (score <= 200) {
-					if (this.speed != 10) {
-						rectangleList.splice();
-						}
-				this.speed = 10;
-				playerObject.speed = 15;
+					this.speed = 10;
+					playerObject.speed = 15;
 				}
 				else if (score <= 300) {
-					if (this.speed != 15) {
-						rectangleList.splice();
-						}
-				this.speed = 15;
-				playerObject.speed = 20;
+					this.speed = 15;
+					playerObject.speed = 20;
 				}
 				else if (score <= 400) {
-					if (this.speed != 20) {
-						rectangleList.splice();
-						}
-				this.speed = 20;
-				playerObject.speed = 25;
+					this.speed = 20;
+					playerObject.speed = 25;
 				}
 				this.x = canvas.width-50;
 				this.y = Math.floor(Math.random()*280) + 40;
@@ -179,11 +172,11 @@ var music = [
 				}
 				
 				if(this.collides(player)){
-				gameOver();
+					gameOver();
 				}
 			}
 			
-			this.draw = function(num){
+			this.draw = function(){
 				draw.rectangles(this.x, this.y, this.w, this.h, this.col);
 			}
 			
@@ -215,9 +208,7 @@ var music = [
 			};
 		}
 		
-		
-		
-		
+	
 		var playerObject = function(){
 			
 			this.init = function(){
@@ -287,14 +278,8 @@ var music = [
 				this.w = Math.floor(Math.random()*100) + 50;
 				this.h = Math.floor(Math.random()*80) + 20;
 				this.col = "#1d52e6";
-				
-				/* this.speed = 5;
-				this.x = canvas.width-50;
-				this.y = Math.floor(Math.random()*280) + 40;
-				this.r = 5;
-				this.color = "#FFD700";
-				this.stroke = "#FFD700";
-				this.lineWid="5px"; */
+				this.strokeCol = '#fff';
+				this.strokeWid = 2;
 			}
 			this.move = function(){
 				this.x -= this.speed;
@@ -311,9 +296,8 @@ var music = [
 				}
 			}
 			
-			this.draw = function(num){
-				/* draw.circle(this.x, this.y, this.r, this.color, this.stroke, this.lineWid); */
-				draw.rectangles(this.x, this.y, this.w, this.h, this.col);
+			this.draw = function(){
+				draw.rectangles(this.x, this.y, this.w, this.h, this.col, this.strokeCol, this.strokeWid);
 			}
 			
 			this.collides = function(obj){
@@ -348,39 +332,25 @@ var music = [
 		var genDebuff = function(){
 			this.init = function() {
 				if (score <= 100) {
-				this.speed = 5;
-					}
+					this.speed = 5;
+				}
 				else if (score <= 200) {
-					if (this.speed == 5) {
-						this.delete();
-						}
-				this.speed = 10;
+					this.speed = 10;
 				}
 				else if (score <= 300) {
-					if (this.speed == 10) {
-						this.delete();
-						}
-				this.speed = 15;
+					this.speed = 15;
 				}
 				else if (score <= 400) {
-					if (this.speed == 15) {
-						this.delete();
-						}
-				this.speed = 20;
+					this.speed = 20;
 				}
 				this.x = canvas.width-50;
 				this.y = Math.floor(Math.random()*280) + 40;
 				this.w = Math.floor(Math.random()*100) + 50;
 				this.h = Math.floor(Math.random()*80) + 20;
 				this.col = "#ff0000";
+				this.strokeCol = '#fff';
+				this.strokeWid = 2;
 				
-				/* this.speed = 5;
-				this.x = canvas.width-50;
-				this.y = Math.floor(Math.random()*280) + 40;
-				this.r = 5;
-				this.color = "#FFD700";
-				this.stroke = "#FFD700";
-				this.lineWid="5px"; */
 			}
 			this.move = function(){
 				this.x -= this.speed;
@@ -397,9 +367,8 @@ var music = [
 				}
 			}
 			
-			this.draw = function(num){
-				/* draw.circle(this.x, this.y, this.r, this.color, this.stroke, this.lineWid); */
-				draw.rectangles(this.x, this.y, this.w, this.h, this.col);
+			this.draw = function(){
+				draw.rectangles(this.x, this.y, this.w, this.h, this.col, this.strokeCol, this.strokeWid);
 			}
 			
 			this.collides = function(obj){
@@ -442,12 +411,10 @@ var music = [
 
 		function menu(){
 			draw.clear();
-			var canvas = document.getElementById("canvas");
-			var ctx = canvas.getContext("2d");
 
 			ctx.font = "900 75px sans-serif";
 			ctx.lineWidth=2;
-			var str = "SHAPE ESCAPE";
+			var str = "SHAPE ESCAPE!";
 			var strwidth = ctx.measureText(str).width;
 			var str2 = "PLAY";
 			var strwidth2 = ctx.measureText(str2).width;
@@ -460,43 +427,29 @@ var music = [
 			var c=0;
 			var color=0;
 
-			/*imgA.setAttribute("src", "buttonA.png");
-			imgA.setAttribute("height", "500");
-			imgA.setAttribute("width", "500");
-			imgA.setAttribute("alt", "A");
-			imgA.setAttribute("x", "450");
-			imgA.setAttribute("y", "250");
-			document.getElementById("buttonsDiv").append(imgA); */
+		
 
-
-			(function a() {
+			
 			   img=ctx.getImageData(0,0,width,width);
-			   //ctx.putImageData(img,0,0);
+			   ctx.putImageData(img,0,0);
 			   ctx.save();
 			   ctx.translate((width/2),width/2);
 			   //ctx.rotate(Math.PI*(c++/200));
 
 			   ctx.fillStyle='hsla('+(color=color+2%360)+', 100%, 50%, 1)';
-			   ctx.fillText("SHAPE ESCAPE",-(strwidth/2), -250);
-			   ctx.strokeText("SHAPE ESCAPE",-(strwidth/2), -250);
+			   ctx.fillText("SHAPE ESCAPE!",-(strwidth/2), -250);
+			   ctx.strokeText("SHAPE ESCAPE!",-(strwidth/2), -250);
 			   ctx.fillText("PLAY",-(strwidth2/1.75), -135);
 			   ctx.strokeText("PLAY",-(strwidth2/1.75), -135);
-			   ctx.fillText("HOW TO PLAY", -(strwidth4/2), 75);
-			   ctx.strokeText("HOW TO PLAY", -(strwidth4/2), 75);
+			   ctx.fillText("HOW TO PLAY", -(strwidth4/2), 0);
+			   ctx.strokeText("HOW TO PLAY", -(strwidth4/2), 0);
 
 			   ctx.restore();
 
 
-			   requestAnimationFrame(a);
-			})();
-			var imgA = new Image();
-			imgA.crossOrigin = "Anonymous";
-			imgA.onload = function () {
-			context.drawImage(imgA, 50, 50);
+			   requestAnimationFrame(menu);
+	
 
-			}
-
-			imgA.src = "buttonA.png";
 		}
 		
 		function loop(){
@@ -554,7 +507,6 @@ var music = [
 					
 					powerupList.push(pow);
 					pow.init();
-					songPlayed.play();
 				}
 			}
 		}
@@ -567,7 +519,7 @@ var music = [
 					
 					debuffList.push(deb);
 					deb.init();
-					songPlayed.play();
+
 				}
 			}
 		}
