@@ -6,13 +6,21 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-		<link href="./css/stylesheet.css" rel="stylesheet">
+		<script src="../js/timeme.min.js"></script>
+		<script>
+			TimeMe.initialize({
+				currentPageName: "Shape-test",
+				idleTimeoutInSeconds: 90
+			});
+		</script>
+		<link href="../css/stylesheet.css" rel="stylesheet">
     </head>
     <body>
+    <div id="gamepadPrompt"></div>
     <canvas id="canvas"></canvas>
 	<div id="gameOver">
 		<div class="menu">
-			<p>GAME OVER!</p>
+			<p id="game-over-text"></p>
 			<h3 id="stats"></h3>
 			<h2 class="menuItem" id="startAgain"></h2>
 			<h2 class="menuItem" id="signUp"></h2>
@@ -20,7 +28,6 @@
 		</div>
 	</div>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-	<script src="./js/timeme.min.js"></script>
-	<script src="./js/script.js"></script>
+	<script src="../js/script.js"></script>
     </body>
 </html>

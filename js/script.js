@@ -1,25 +1,27 @@
 var player;
 var score = 0;
+var powerUpScore = 0;
+var speedPower = 0;
 var time = 0;
 var wall1;
 var wall2;
-var handle, spawn;
+var handle, spawn, addp, addb;
 var paused = false;
 var hasGP = false;
 var repGP;
 var gameStart = false;
 var music = [
-	{fileName: '../music/song1.mp3',title: 'Back in Town - Crimson Nights'},
-	{fileName: '../music/song2.mp3',title: 'Chiptune Anthem - TeknoAXE'},
-	{fileName: '../music/song3.mp3',title: 'Digital Ether - Bit Chip Tune'},
-	{fileName: '../music/song4.mp3',title: 'Logical Sequnce of Events'},
-	{fileName: '../music/song5.mp3',title: 'To the Next Destination'}
+	{fileName: './music/song1.mp3',title: 'Back in Town - Crimson Nights'},
+	{fileName: './music/song2.mp3',title: 'Chiptune Anthem - TeknoAXE'},
+	{fileName: './music/song3.mp3',title: 'Digital Ether - Bit Chip Tune'},
+	{fileName: './music/song4.mp3',title: 'Logical Sequnce of Events'},
+	{fileName: './music/song5.mp3',title: 'To the Next Destination'}
 ];
 	
 	function canGame() {
 			return "getGamepads" in navigator;
 	}
-
+		
 	$(document).ready(function() {
 		var randomIndexSong = Math.floor(Math.random() * music.length);
 		var song = music[randomIndexSong];
@@ -35,7 +37,8 @@ var music = [
 		
 
 		var rectangleList = [];
-		var powerUp = [];
+		var powerupList = [];
+		var debuffList=[];
 		
 		var canvas = $('#canvas')[0];
 		canvas.width = 720;
@@ -137,7 +140,31 @@ var music = [
 		
 		var randomRectangle = function(){
 			this.init = function() {
+				if (score <= 100) {
 				this.speed = 5;
+				playerObject.speed = 10;
+					}
+				else if (score <= 200) {
+					if (this.speed != 10) {
+						rectangleList.splice();
+						}
+				this.speed = 10;
+				playerObject.speed = 15;
+				}
+				else if (score <= 300) {
+					if (this.speed != 15) {
+						rectangleList.splice();
+						}
+				this.speed = 15;
+				playerObject.speed = 20;
+				}
+				else if (score <= 400) {
+					if (this.speed != 20) {
+						rectangleList.splice();
+						}
+				this.speed = 20;
+				playerObject.speed = 25;
+				}
 				this.x = canvas.width-50;
 				this.y = Math.floor(Math.random()*280) + 40;
 				this.w = Math.floor(Math.random()*100) + 50;
@@ -149,11 +176,10 @@ var music = [
 				
 				if(this.x < 0){
 					rectangleList.splice();
-					
 				}
 				
 				if(this.collides(player)){
-					gameOver();
+				gameOver();
 				}
 			}
 			
@@ -189,9 +215,13 @@ var music = [
 			};
 		}
 		
+		
+		
+		
 		var playerObject = function(){
 			
 			this.init = function(){
+			
 				this.speed = 10;
 				this.x = 50;
 				this.y = 220;
@@ -229,6 +259,177 @@ var music = [
 			
 		};
 		
+		var genPowerUp = function(){
+			this.init = function() {
+				if (score <= 100) {
+				this.speed = 5;
+					}
+				else if (score <= 200) {
+					if (this.speed == 5) {
+						this.delete();
+						}
+				this.speed = 10;
+				}
+				else if (score <= 300) {
+					if (this.speed == 10) {
+						this.delete();
+						}
+				this.speed = 15;
+				}
+				else if (score <= 400) {
+					if (this.speed == 15) {
+						this.delete();
+						}
+				this.speed = 20;
+				}
+				this.x = canvas.width-50;
+				this.y = Math.floor(Math.random()*280) + 40;
+				this.w = Math.floor(Math.random()*100) + 50;
+				this.h = Math.floor(Math.random()*80) + 20;
+				this.col = "#1d52e6";
+				
+				/* this.speed = 5;
+				this.x = canvas.width-50;
+				this.y = Math.floor(Math.random()*280) + 40;
+				this.r = 5;
+				this.color = "#FFD700";
+				this.stroke = "#FFD700";
+				this.lineWid="5px"; */
+			}
+			this.move = function(){
+				this.x -= this.speed;
+				
+				if(this.x < 0){
+					powerupList.splice();
+					
+				}
+				
+				if(this.collides(player)){
+					powerUpScore += 1;
+					speedPower = 1;
+					
+				}
+			}
+			
+			this.draw = function(num){
+				/* draw.circle(this.x, this.y, this.r, this.color, this.stroke, this.lineWid); */
+				draw.rectangles(this.x, this.y, this.w, this.h, this.col);
+			}
+			
+			this.collides = function(obj){
+				this.left = this.x;
+				this.right = this.x + this.w;
+				this.top = this.y;
+				this.bottom = this.y + this.h;
+				
+				obj.left = obj.x+12;
+				obj.right = obj.x + obj.r - 12;
+				obj.top = obj.y - obj.r+15;
+				obj.bottom = obj.y + obj.r-12;
+				
+				if(this.bottom < obj.top){
+					return false;
+				}
+				if(this.top > obj.bottom){
+					return false;
+				}
+				if(this.right < obj.left){
+					return false;
+				}
+				if(this.left > obj.right){
+					return false;
+				}
+				
+				return true;
+			};
+		}
+		
+		
+		var genDebuff = function(){
+			this.init = function() {
+				if (score <= 100) {
+				this.speed = 5;
+					}
+				else if (score <= 200) {
+					if (this.speed == 5) {
+						this.delete();
+						}
+				this.speed = 10;
+				}
+				else if (score <= 300) {
+					if (this.speed == 10) {
+						this.delete();
+						}
+				this.speed = 15;
+				}
+				else if (score <= 400) {
+					if (this.speed == 15) {
+						this.delete();
+						}
+				this.speed = 20;
+				}
+				this.x = canvas.width-50;
+				this.y = Math.floor(Math.random()*280) + 40;
+				this.w = Math.floor(Math.random()*100) + 50;
+				this.h = Math.floor(Math.random()*80) + 20;
+				this.col = "#ff0000";
+				
+				/* this.speed = 5;
+				this.x = canvas.width-50;
+				this.y = Math.floor(Math.random()*280) + 40;
+				this.r = 5;
+				this.color = "#FFD700";
+				this.stroke = "#FFD700";
+				this.lineWid="5px"; */
+			}
+			this.move = function(){
+				this.x -= this.speed;
+				
+				if(this.x < 0){
+					debuffList.splice();
+					
+				}
+				
+				if(this.collides(player)){
+					powerUpScore -= 1;
+					speedPower = 1;
+					
+				}
+			}
+			
+			this.draw = function(num){
+				/* draw.circle(this.x, this.y, this.r, this.color, this.stroke, this.lineWid); */
+				draw.rectangles(this.x, this.y, this.w, this.h, this.col);
+			}
+			
+			this.collides = function(obj){
+				this.left = this.x;
+				this.right = this.x + this.w;
+				this.top = this.y;
+				this.bottom = this.y + this.h;
+				
+				obj.left = obj.x+12;
+				obj.right = obj.x + obj.r - 12;
+				obj.top = obj.y - obj.r+15;
+				obj.bottom = obj.y + obj.r-12;
+				
+				if(this.bottom < obj.top){
+					return false;
+				}
+				if(this.top > obj.bottom){
+					return false;
+				}
+				if(this.right < obj.left){
+					return false;
+				}
+				if(this.left > obj.right){
+					return false;
+				}
+				
+				return true;
+			};
+		}
+		
 		
 		player = new playerObject();
 		player.init();
@@ -239,11 +440,65 @@ var music = [
 		wall2 = new wallBottom();
 		wall2.init();		
 
-		/*function menu(){
+		function menu(){
 			draw.clear();
-			handle = setInterval(loop, 30);
-			spawn = setInterval(addRects, 1000);
-		}*/
+			var canvas = document.getElementById("canvas");
+			var ctx = canvas.getContext("2d");
+
+			ctx.font = "900 75px sans-serif";
+			ctx.lineWidth=2;
+			var str = "SHAPE ESCAPE";
+			var strwidth = ctx.measureText(str).width;
+			var str2 = "PLAY";
+			var strwidth2 = ctx.measureText(str2).width;
+			
+			var width=canvas.width;
+
+			var str4 = "HOW TO PLAY";
+			var strwidth4 = ctx.measureText(str4).width;
+
+			var c=0;
+			var color=0;
+
+			/*imgA.setAttribute("src", "buttonA.png");
+			imgA.setAttribute("height", "500");
+			imgA.setAttribute("width", "500");
+			imgA.setAttribute("alt", "A");
+			imgA.setAttribute("x", "450");
+			imgA.setAttribute("y", "250");
+			document.getElementById("buttonsDiv").append(imgA); */
+
+
+			(function a() {
+			   img=ctx.getImageData(0,0,width,width);
+			   //ctx.putImageData(img,0,0);
+			   ctx.save();
+			   ctx.translate((width/2),width/2);
+			   //ctx.rotate(Math.PI*(c++/200));
+
+			   ctx.fillStyle='hsla('+(color=color+2%360)+', 100%, 50%, 1)';
+			   ctx.fillText("SHAPE ESCAPE",-(strwidth/2), -250);
+			   ctx.strokeText("SHAPE ESCAPE",-(strwidth/2), -250);
+			   ctx.fillText("PLAY",-(strwidth2/1.75), -135);
+			   ctx.strokeText("PLAY",-(strwidth2/1.75), -135);
+			   ctx.fillText("HOW TO PLAY", -(strwidth4/2), 75);
+			   ctx.strokeText("HOW TO PLAY", -(strwidth4/2), 75);
+
+			   ctx.restore();
+
+
+			   requestAnimationFrame(a);
+			})();
+			var imgA = new Image();
+			imgA.crossOrigin = "Anonymous";
+			imgA.onload = function () {
+			context.drawImage(imgA, 50, 50);
+
+			}
+
+			imgA.src = "buttonA.png";
+		}
+		
 		function loop(){
 			
 			gameStart = true;
@@ -260,17 +515,28 @@ var music = [
 				rec.draw();
 				rec.move();	
 			}
+			for (var i=0;i<powerupList.length;i++){
+				pow = powerupList[i];
+				pow.draw();
+				pow.move();
+			}
+			for(var i=0;i<debuffList.length;i++){
+				deb = debuffList[i];
+				deb.draw();
+				deb.move();
+			}
 			
 			TimeMe.startTimer("game");
 
 			time = TimeMe.getTimeOnPageInSeconds("game").toFixed(2);
-			score = Math.floor(time * 1.5);
+			score = Math.floor(powerUpScore + (time * 1.5));
 		}
+		
 		
 		var rectsPerSpawn = 1;
 		function addRects(){
 			for(var i=0;i<rectsPerSpawn;i++){
-				if(rectangleList.length < 500){
+				if(rectangleList.length < 10000){
 					var rec = new randomRectangle();
 					
 					rectangleList.push(rec);
@@ -280,8 +546,37 @@ var music = [
 			}
 		}
 		
+		var powersPerSpawn = 1;
+		function addPowerUps(){
+			for(var i=0;i<powersPerSpawn;i++){
+				if(powerupList.length < 5000){
+					var pow = new genPowerUp;
+					
+					powerupList.push(pow);
+					pow.init();
+					songPlayed.play();
+				}
+			}
+		}
+		
+		var debuffsPerSpawn = 1;
+		function addDebuffs(){
+			for(var i=0;i<debuffsPerSpawn;i++){
+				if(debuffList.length < 5000){
+					var deb = new genDebuff;
+					
+					debuffList.push(deb);
+					deb.init();
+					songPlayed.play();
+				}
+			}
+		}
+		
 		handle = setInterval(loop, 30);
 		spawn = setInterval(addRects, 900);
+		addp = setInterval(addPowerUps,4500);
+		addb = setInterval(addDebuffs,9000);
+		
 		
 		function wait(timeToWait){
 			var now = new Date().getTime();
@@ -298,8 +593,12 @@ var music = [
 			wait(1000);
 			clearInterval(handle);
 			clearInterval(spawn);
+			clearInterval(addp);
+			clearInterval(addb);
 			handle = 0;
 			spawn = 0;
+			addp = 0;
+			addb = 0;
 
 			$("#gameOver").show();
 			$("#game-over-text").html("GAME OVER!");
@@ -324,13 +623,20 @@ var music = [
 			TimeMe.resetAllRecordedPageTimes();
 			clearInterval(handle);
 			clearInterval(spawn);
+			clearInterval(addp);
+			clearInterval(addb);
 				
 			handle = 0;
 			spawn = 0;
+			addp = 0;
+			addb = 0;
 			score = 0;
+			powerUpScore = 0;
 			time = 0;
 			draw.clear();
 			rectangleList = [];
+			powerupList = [];
+			debuffList = [];
 			$("#gameOver").hide();
 				
 				
@@ -339,6 +645,8 @@ var music = [
 			wall2.init();
 			spawn = setInterval(addRects, 900);
 			handle = setInterval(loop, 30);
+			addp = setInterval(addPowerUps,4500);
+			addb = setInterval(addDebuffs,9000);
 			
 			randomIndexSong = Math.floor(Math.random() * music.length);
 			song = music[randomIndexSong];
@@ -356,14 +664,18 @@ var music = [
 			TimeMe.resetAllRecordedPageTimes();
 			clearInterval(handle);
 			clearInterval(spawn);
+			clearInterval(addp);
 			
 			handle = 0;
 			spawn = 0;
+			addp = 0;
 			score = 0;
+			powerUpScore = 0;
 			time = 0;
 			$("#gameOver").hide();
 			menu();
 		}
+		
 		function togglePause(paused){
 			if(paused){
 				songPlayed.pause();
@@ -371,8 +683,10 @@ var music = [
 				TimeMe.stopTimer("game");
 				clearInterval(handle);
 				clearInterval(spawn);
+				clearInterval(addp);
 				handle = 0;
 				spawn = 0;
+				addp = 0;
 			}
 			else{
 				songPlayed.play();
@@ -380,6 +694,8 @@ var music = [
 				TimeMe.startTimer("game");
 				handle = setInterval(loop, 30);
 				spawn = setInterval(addRects, 900);
+				addp = setInterval(addPowerUps,4500);
+				addb = setInterval(addDebuffs,9000);
 			}
 			
 		}
@@ -403,7 +719,7 @@ var music = [
 					input.up = true;
 					input.down = false;
 				}
-				else{
+				else {
 					input.up = false;
 					input.down = false;
 				}
@@ -428,7 +744,7 @@ var music = [
 				}
 			}
 			else{
-				//menu();
+				menu();
 			}
 		}
 
