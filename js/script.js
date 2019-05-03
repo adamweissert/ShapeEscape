@@ -48,7 +48,7 @@ $(document).ready(function() {
     var songPlayed = new Audio(); //new audio objext
 
     songPlayed.src = source; //assign source to audio object
-    songPlayed.autoplay = true; //autoplay is true, but this doesn't really work
+    //songPlayed.autoplay = true; //autoplay is true, but this doesn't really work
 
     songPlayed.addEventListener("ended", function() {
             songPlayed.currentTime = 0; //restart song if it ends
