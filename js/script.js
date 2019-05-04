@@ -55,7 +55,7 @@ $(document).ready(function() {
         })
         /*-----------------GETTING RANDOM SONG-----------------------------------*/
 
-    $("#gameOver, #controls, #scoresList").hide();
+    $("#gameOver, #controls, #scoresList, #scoresLog").hide();
 
     /*-----------------RANDOMLY GENERATED SHAPE LISTS-----------------------------------*/
     var rectangleList = [];
@@ -509,6 +509,8 @@ $(document).ready(function() {
         //draw the start menu
         draw.clear(); //clear the canvas
 
+        $("#scoresList, #controls").hide(); //hide other menus if shown
+        $('#controlsInfo').html("");
         $("#startMenu").show(); //if the div is hidden, show it
 
         $("#startGame").click(function() { //starts the game
@@ -602,7 +604,7 @@ $(document).ready(function() {
         TimeMe.startTimer("game"); //starts the timer at 0 for a new game
 
         time = TimeMe.getTimeOnPageInSeconds("game").toFixed(2); //sets the time to seconds with 2 decimal places
-        score = Math.floor(powerUpScore + (time * 1.5)); //score is always increasing by 1.5 of time
+        score = Math.ceil(powerUpScore + (time * 1.5)); //score is always increasing by 1.5 of time
     }
     /*------------------INTERVAL FOR DRAWING-----------------------------------*/
 
@@ -648,7 +650,7 @@ $(document).ready(function() {
             restart(); //start a new game without saving
         });
         $("#signUp").click(function() {
-            scores(score, time); //save scores
+            logScores(score, time); //save scores
         });
         $("#mainMenu").click(function() {
             endGame(); //exit the game without saving
@@ -698,9 +700,53 @@ $(document).ready(function() {
     /*------------------RESTART-----------------------------------*/
 
 
-    /*------------------LOG SCORE-----------------------------------*/
-    function scores(time, score) {
-        //TODO: Log scores
+    /*------------------LOG SCORE/DISPLAY SCORES-----------------------------------*/
+    function logScores() {
+        $("#gameOver").hide(); //hide game over menu
+        $("#scoresLog").show();
+        $("#titleLogScores").html("LOG SCORE");
+        $("#playerStats").html("<h3>Score: " + score + " - Time: " + time + "s</h3>");
+        $("#scoresForm").html("");
+
+        $("#scoresForm").append("<h2 class=''>Enter your initials: </h2>");
+        $("#scoresForm").append("<p id='error'></p>");
+        $("#scoresForm").append("<input type='text' name='playerName' maxlength='3' id='initials'><br>");
+        $("#scoresForm").append("<input type='submit' value='LOG' class='button'><input type='button' id='closeScores' value='CLOSE' class='button'>");
+
+        $("#closeScores").click(function() {
+            $("#scoresForm").html("");
+            $("#scoresLog").hide();
+            $("#startMenu").show();
+        });
+
+        $("#scoresForm").submit(function(e) {
+            var playerName = $("#initials").val();
+            if (playerName == "") {
+                e.preventDefault();
+                $("#error").html("Please enter a name!");
+                $("#initials").css('border', '2px solid red');
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "./php/logscores.php",
+                    data: {
+                        name: playerName,
+                        time: time,
+                        score: score
+                    },
+                    success: function(response) {
+                        $("#error").html("");
+                        $("#initials").val("").css('border', '2px solid #00ef07');
+                        $("#response").html(response);
+                    }
+                });
+            }
+        });
+
+
+    }
+
+    function scores() {
         $("#startMenu, #controls").hide(); //hide other menus if shown
         $("#scoresList").show();
         $("#titleScores").html("TOP SCORES");
@@ -716,6 +762,7 @@ $(document).ready(function() {
     /*------------------HOW TO PLAY-----------------------------------*/
     function controls() {
         //shows user how to play the game
+        $("#controlsInfo").html(""); //clear info box to prevent dupes
         $("#startMenu, #scoresList").hide();
         $("#controls").show();
         $("#titleControls").html("HOW TO PLAY");
@@ -876,9 +923,3 @@ $(document).ready(function() {
     }
     /*-----------------CHECKING FOR GAMEPAD-----------------------------------*/
 });
-
-/*TODO:
--log scores
--score info
--stylize page a bit?
-*/
