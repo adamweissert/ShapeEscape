@@ -786,7 +786,7 @@ $(document).ready(function() {
         $("#closeScores").click(function() {
             $("#scoresForm, #response").html("");
             $("#scoresLog").hide();
-            $("#startMenu").show();
+            menu();
         });
 
         $("#formSub").click(function(e) {
