@@ -1,33 +1,73 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-		<script src="./js/timeme.min.js"></script>
-		<script>
-			TimeMe.initialize({
-				currentPageName: "Shape-test",
-				idleTimeoutInSeconds: 90
-			});
-		</script>
-		<link href="./css/stylesheet.css" rel="stylesheet">
-    </head>
-    <body>
-    <div id="gamepadPrompt"></div>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Shape Escape!</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <script src="./js/timeme.min.js"></script>
+    <script>
+        TimeMe.initialize({
+            currentPageName: "Shape-test",
+            idleTimeoutInSeconds: 90
+        });
+    </script>
+    <link href="./css/stylesheet.css" rel="stylesheet">
+</head>
+
+<body>
     <canvas id="canvas"></canvas>
-	<div id="gameOver">
-		<div class="menu">
-			<p id="game-over-text"></p>
-			<h3 id="stats"></h3>
-			<h2 class="menuItem" id="startAgain"></h2>
-			<h2 class="menuItem" id="signUp"></h2>
-			<h2 class="menuItem" id="mainMenu"></h2>
-		</div>
-	</div>
+    <div id="startMenu">
+        <div class="menu">
+            <p id="title">SHAPE ESCAPE!</p>
+            <h2 class="menuItem" id="startGame">Start Game <span style='color:yellow'> (A)</span></h2>
+            <h2 class="menuItem" id="howToPlay">How To Play <span style='color:yellow'> (B)</span></h2>
+            <h2 class="menuItem" id="scores">Show High Scores <span style='color:yellow'> (Y)</span></h2>
+        </div>
+    </div>
+    <div id="controls">
+        <div class="menu" id="controlsContent">
+            <p id="titleControls"></p>
+            <ul id="controlsInfo">
+
+            </ul>
+        </div>
+        <div id="controlsButton"></div>
+    </div>
+    <div id="scoresLog">
+        <div class="menu" id="scoresLogContent">
+            <p id="titleLogScores"></p>
+            <h2 id="playerStats"></h2>
+            <div id="logForm">
+                <form action="logscores.php" method="POST" id="scoresForm">
+
+                </form>
+                <p id='response'></p>
+            </div>
+        </div>
+    </div>
+    <div id="scoresList">
+        <div class="menu" id="scoresContent">
+            <p id="titleScores"></p>
+            <ol id="topScores">
+
+            </ol>
+        </div>
+        <div id="scoreButton"></div>
+    </div>
+    <div id="gameOver">
+        <div class="menu">
+            <p id="game-over-text"></p>
+            <h3 id="stats"></h3>
+            <h2 class="menuItem" id="startAgain"></h2>
+            <h2 class="menuItem" id="signUp"></h2>
+            <h2 class="menuItem" id="mainMenu"></h2>
+        </div>
+    </div>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-	<script src="./js/script.js"></script>
-    </body>
+    <script src="./js/script.js"></script>
+</body>
+
 </html>
