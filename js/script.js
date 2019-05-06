@@ -48,6 +48,7 @@ $(document).ready(function() {
     var songPlayed = new Audio(); //new audio objext
 
     songPlayed.src = source; //assign source to audio object
+    songPlayed.volume = .33;
     //songPlayed.autoplay = true; //autoplay is true, but this doesn't really work
 
     songPlayed.addEventListener("ended", function() {
@@ -213,24 +214,24 @@ $(document).ready(function() {
                     this.speed = 20;
                     playerObject.speed = 25;
                 } else if (score <= 500) {
-					this.speed = 25;
-					playerObject.speed = 20;
-				} else if (score <= 600) {
-					this.speed = 35;
-					playerObject.speed = 15;
-				} else if (score <= 700) {
-					this.speed = 45;
-					playerObject.speed = 8;
-				} else if (score <= 800) {
-					this.speed = 55;
-					playerObject.speed = 5;
-				} else if (score <= 900) {
-					this.speed = 65;
-					playerObject.speed = 4;
-				} else if (score <= 1000) {
-					this.speed = 70;
-					playerObject.speed = 3;
-				} 
+                    this.speed = 25;
+                    playerObject.speed = 20;
+                } else if (score <= 600) {
+                    this.speed = 35;
+                    playerObject.speed = 15;
+                } else if (score <= 700) {
+                    this.speed = 45;
+                    playerObject.speed = 8;
+                } else if (score <= 800) {
+                    this.speed = 55;
+                    playerObject.speed = 5;
+                } else if (score <= 900) {
+                    this.speed = 65;
+                    playerObject.speed = 4;
+                } else if (score <= 1000) {
+                    this.speed = 70;
+                    playerObject.speed = 3;
+                }
                 this.x = canvas.width - 50; //appear first 50px to right of canvas hidden
                 this.y = Math.floor(Math.random() * 280) + 40; //random y coordinate between walls
                 this.w = Math.floor(Math.random() * 100) + 50; //random width from 50-100px
@@ -345,24 +346,24 @@ $(document).ready(function() {
                     this.speed = 20;
                     playerObject.speed = 25;
                 } else if (score <= 500) {
-					this.speed = 25;
-					playerObject.speed = 20;
-				} else if (score <= 600) {
-					this.speed = 35;
-					playerObject.speed = 15;
-				} else if (score <= 700) {
-					this.speed = 45;
-					playerObject.speed = 8;
-				} else if (score <= 800) {
-					this.speed = 55;
-					playerObject.speed = 5;
-				} else if (score <= 900) {
-					this.speed = 65;
-					playerObject.speed = 4;
-				} else if (score <= 1000) {
-					this.speed = 70;
-					playerObject.speed = 3;
-				}
+                    this.speed = 25;
+                    playerObject.speed = 20;
+                } else if (score <= 600) {
+                    this.speed = 35;
+                    playerObject.speed = 15;
+                } else if (score <= 700) {
+                    this.speed = 45;
+                    playerObject.speed = 8;
+                } else if (score <= 800) {
+                    this.speed = 55;
+                    playerObject.speed = 5;
+                } else if (score <= 900) {
+                    this.speed = 65;
+                    playerObject.speed = 4;
+                } else if (score <= 1000) {
+                    this.speed = 70;
+                    playerObject.speed = 3;
+                }
                 this.x = canvas.width - 50;
                 this.y = Math.floor(Math.random() * 280) + 40;
                 this.w = Math.floor(Math.random() * 100) + 50;
@@ -436,24 +437,24 @@ $(document).ready(function() {
                     this.speed = 20;
                     playerObject.speed = 25;
                 } else if (score <= 500) {
-					this.speed = 25;
-					playerObject.speed = 20;
-				} else if (score <= 600) {
-					this.speed = 35;
-					playerObject.speed = 15;
-				} else if (score <= 700) {
-					this.speed = 45;
-					playerObject.speed = 8;
-				} else if (score <= 800) {
-					this.speed = 55;
-					playerObject.speed = 5;
-				} else if (score <= 900) {
-					this.speed = 65;
-					playerObject.speed = 4;
-				} else if (score <= 1000) {
-					this.speed = 70;
-					playerObject.speed = 3;
-				}
+                    this.speed = 25;
+                    playerObject.speed = 20;
+                } else if (score <= 600) {
+                    this.speed = 35;
+                    playerObject.speed = 15;
+                } else if (score <= 700) {
+                    this.speed = 45;
+                    playerObject.speed = 8;
+                } else if (score <= 800) {
+                    this.speed = 55;
+                    playerObject.speed = 5;
+                } else if (score <= 900) {
+                    this.speed = 65;
+                    playerObject.speed = 4;
+                } else if (score <= 1000) {
+                    this.speed = 70;
+                    playerObject.speed = 3;
+                }
                 this.x = canvas.width - 50;
                 this.y = Math.floor(Math.random() * 280) + 40;
                 this.w = Math.floor(Math.random() * 100) + 50;
@@ -569,8 +570,15 @@ $(document).ready(function() {
     /*------------------MENU-----------------------------------*/
     function menu() {
         //draw the start menu
-        draw.clear(); //clear the canvas
+        randomIndexSong = Math.floor(Math.random() * music.length); //pick a new song
+        song = music[randomIndexSong];
+        source = song.fileName;
 
+        songPlayed.src = source;
+        songPlayed.volume = .33;
+        songPlayed.play();
+
+        draw.clear(); //clear the canvas
         $("#scoresList, #controls").hide(); //hide other menus if shown
         $('#controlsInfo').html("");
         $("#startMenu").show(); //if the div is hidden, show it
@@ -772,16 +780,16 @@ $(document).ready(function() {
 
         $("#scoresForm").append("<h2 class=''>Enter your initials: </h2>");
         $("#scoresForm").append("<p id='error'></p>");
-        $("#scoresForm").append("<input type='text' name='playerName' maxlength='3' id='initials'><br>");
-        $("#scoresForm").append("<input type='submit' value='LOG' class='button'><input type='button' id='closeScores' value='CLOSE' class='button'>");
+        $("#scoresForm").append("<input type='text' autocomplete='off' name='playerName' maxlength='3' id='initials'><br>");
+        $("#scoresForm").append("<input type='button' value='LOG' class='button' id='formSub'><input type='button' id='closeScores' value='CLOSE' class='button'>");
 
         $("#closeScores").click(function() {
-            $("#scoresForm").html("");
+            $("#scoresForm, #response").html("");
             $("#scoresLog").hide();
-            $("#startMenu").show();
+            menu();
         });
 
-        $("#scoresForm").submit(function(e) {
+        $("#formSub").click(function(e) {
             var playerName = $("#initials").val();
             if (playerName == "") {
                 e.preventDefault();
@@ -798,7 +806,7 @@ $(document).ready(function() {
                     },
                     success: function(response) {
                         $("#error").html("");
-                        $("#initials").val("").css('border', '2px solid #00ef07');
+                        $("#initials").hide();
                         $("#response").html(response);
                     }
                 });
@@ -814,6 +822,16 @@ $(document).ready(function() {
         $("#titleScores").html("TOP SCORES");
         $("#scoreButton").html("<input type='button' class='button' value='Close' id='hideScores'>");
 
+        $.ajax({
+            type: "POST",
+            url: "./php/getscores.php",
+            success: function(response) {
+                $("#topScores").html(response);
+            },
+            error: function(response) {
+                $("#topScores").html(response);
+            }
+        });
         $("#hideScores").click(function() {
             $("#scoresList").hide();
             $("#startMenu").show();
